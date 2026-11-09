@@ -1,0 +1,4 @@
+# colcon 会把所有包的编译数据库合并到 build/compile_commands.json
+# （需要编译时带 -DCMAKE_EXPORT_COMPILE_COMMANDS=ON，两个包都要）
+CompileFlags:
+  CompilationDatabase: build

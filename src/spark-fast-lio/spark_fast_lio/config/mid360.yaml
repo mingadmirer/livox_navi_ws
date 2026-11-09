@@ -1,0 +1,54 @@
+# Mid-360 + spark_fast_lio
+# 注意: 本 fork 的话题名是写死的相对名 "lidar" / "imu"，
+#       实际使用时靠 launch 里的 remap 指向 /livox/lidar 与 /livox/imu。
+/**:
+  ros__parameters:
+    common:
+      save_dir: ""
+      sequence_name: "mid360"
+      map_frame: "odom"
+      lidar_frame: "livox_frame"
+      imu_frame: "livox_imu"
+      base_frame: ""
+      visualization_frame: "imu"
+      time_sync_en: false
+
+    preprocess:
+      lidar_type: 1              # 1 = Livox（非重复扫描）
+      scan_line: 6               # Mid-360 没有固定线束，此项基本无效
+      blind: 0.1                 # 盲区 0.1 m
+      timestamp_unit: 3          # 3 = nanosecond
+      scan_rate: 10
+
+    mapping:
+      det_range: 60.0            # Mid-360 有效量程 ~40 m，取 60 留余量
+      fov_degree: 360.0
+      acc_cov: 0.1
+      gyr_cov: 0.1
+      b_acc_cov: 0.0001
+      b_gyr_cov: 0.0001
+      extrinsic_est_en: false
+      # Mid-360 的 IMU 与雷达同壳体，这里保持零偏置 + 单位阵；
+      # 雷达相对车体的安装角请写在 TF（base_link -> livox_frame）里，不要放这里
+      extrinsic_T: [ 0.0, 0.0, 0.0 ]
+      extrinsic_R: [ 1.0, 0.0, 0.0,
+                     0.0, 1.0, 0.0,
+                     0.0, 0.0, 1.0 ]
+
+    filter_size_map: 0.3
+    point_filter_num: 3          # 200k pts/s 抽稀到 ~66k/s
+    cube_side_length: 200.0
+    max_iteration: 4
+
+    publish:
+      path_en: true
+      scan_publish_en: true
+      dense_publish_en: true
+      scan_bodyframe_pub_en: true
+
+    pcd_save:
+      pcd_save_en: false
+      interval: -1
+
+    gravity_alignment:
+      enable_gravity_alignment: true

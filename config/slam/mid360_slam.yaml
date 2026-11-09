@@ -1,0 +1,53 @@
+# Mid-360 + spark-fast-lio 参数
+# 用法: ros2 launch ~/livox_navi_ws/config/slam/slam_mid360.launch.py
+/**:
+  ros__parameters:
+    common:
+      save_dir: ""                 # 本 fork 未使用
+      sequence_name: "mid360"
+      map_frame: "odom"            # RViz 的 Fixed Frame 要写 odom
+      lidar_frame: "livox_frame"
+      imu_frame: "livox_imu"
+      base_frame: ""               # 需要 base_link 时填 "base_link"，并提供对应 TF
+      visualization_frame: "imu"   # 只能是 imu / lidar / base
+      time_sync_en: false
+
+    preprocess:
+      lidar_type: 1                # 1 = Livox（决定订阅 CustomMsg 还是 PointCloud2）
+      scan_line: 6                 # Mid-360 无线束概念，此值无效
+      blind: 0.1                   # 盲区 0.1 m
+      timestamp_unit: 3            # 3 = nanosecond（CustomMsg 的 offset_time）
+      scan_rate: 10
+
+    mapping:
+      det_range: 60.0              # 有效量程约 40 m，留余量
+      fov_degree: 360.0
+      acc_cov: 0.1
+      gyr_cov: 0.1
+      b_acc_cov: 0.0001
+      b_gyr_cov: 0.0001
+      extrinsic_est_en: false
+      # Mid-360 的 IMU 与雷达同壳体：这里保持零偏置 + 单位阵
+      # 雷达相对车体的安装角写到 TF（base_link -> livox_frame），不要放这里
+      extrinsic_T: [ 0.0, 0.0, 0.0 ]
+      extrinsic_R: [ 1.0, 0.0, 0.0,
+                     0.0, 1.0, 0.0,
+                     0.0, 0.0, 1.0 ]
+
+    filter_size_map: 0.3
+    point_filter_num: 3            # 200k 点/s 抽稀到约 66k/s
+    cube_side_length: 200.0
+    max_iteration: 4
+
+    publish:
+      path_en: true
+      scan_publish_en: true
+      dense_publish_en: true
+      scan_bodyframe_pub_en: true
+
+    pcd_save:
+      pcd_save_en: false           # 打开前必须先建 PCD/ 目录（见 README），否则 pcl 写盘失败会让节点崩
+      interval: 100                # 必须 > 0；-1 在这个 fork 里不会保存任何文件
+
+    gravity_alignment:
+      enable_gravity_alignment: true

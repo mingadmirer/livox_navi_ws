@@ -1,0 +1,7 @@
+{
+    "cmake.sourceDirectory": "/home/mingadmirer/livox_navi_ws/src/livox_ros_driver2",
+    "files.associations": {
+        ".clangd": "yaml",
+        "*.clangd": "yaml"
+    }
+}
